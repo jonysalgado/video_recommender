@@ -8,7 +8,7 @@ def update_db():
     ydl = ytdl.YoutubeDL({"ignoreerrors": True})
     with open("new_videos.json", "w+") as output:
         for query in queries:
-            r = ydl.extract_info("ytsearch5:{}".format(query), download=False) # Change to 50 after
+            r = ydl.extract_info("ytsearch50:{}".format(query), download=False) # Change to 50 after
             for entry in r['entries']:
                 if entry is not None:
                     p = compute_prediction(entry)
