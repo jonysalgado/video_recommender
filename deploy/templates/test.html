@@ -1,0 +1,33 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+        $(function() {
+          $('a#test1').on('click', function(e) {
+            e.preventDefault()
+            $.getJSON('/background_process_test?x=sim&y=ok' ,
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+</script>
+<script type=text/javascript>
+    $(function() {
+      $('a#test2').on('click', function(e) {
+        e.preventDefault()
+        $.getJSON('/background_process_test?x=nao&y=ok' ,
+            function(data) {
+          //do nothing
+        });
+        return false;
+      });
+    });
+</script>
+
+//button
+<h3>Test</h3>
+        <form>
+            <a href=# id=test1><button class='btn btn-default'>Sim</button></a>
+            <a href=# id=test2><button class='btn btn-default'>Nao</button></a>
+        </form>
+
