@@ -6,8 +6,22 @@ import os
 import json
 import run_backend
 import time
+import pymongo
+from dotenv import dotenv_values
+
+
+config = dotenv_values(".env")
 
 app = Flask(__name__)
+print("Conectando banco de dados...")
+conn_str = "mongodb+srv://{}:{}@cluster0.8wxie.mongodb.net/myFirstDatabase?retryWrites=true&w=majority".format(config["USER"], config["PASSWORD"])
+client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
+feedbacks = {}
+db = client["test"]
+if config["COLLECTION"] not in db.list_collection_names():
+    db.create_collection(config["COLLECTION"]) 
+    collection = db[config["COLLECTION"]]
+
 
 class Video:
     def __init__(self, video_id, title, thumbnail,score):
@@ -40,6 +54,7 @@ def get_predictions():
                     video["title"], 
                     video["thumbnail"], 
                     round(video["score"], 2)))
+        feedbacks[video["video_id"]] = -1
         
     predictions = sorted(predictions, key = lambda x: x.score, reverse=True)[:30]
     return predictions, int((time.time_ns() - last_update)/(1e9 * 60 * 60))
@@ -51,11 +66,20 @@ preds, last_update = get_predictions()
 def main_page():
     return render_template("basic_table.html", title="Video Recommender", videos=preds, last_update=last_update)
 
-@app.route('/background_process_button')
+@app.route('/background_process_button', methods=['POST'])
 def background_process_botton():
-    print(request.args.get('x'))
+
+    for pred in preds:
+
+        if type(request.form.get(pred.video_id + "yes")) == str:
+            feedbacks[pred.video_id] = 1
+            print(pred.video_id, 1)
+        elif type(request.form.get(pred.video_id + "no")) == str:
+            feedbacks[pred.video_id] = 0
+            print(pred.video_id, 0)
+
     print("ok")
-    return ("nothing")
+    return redirect('/')
 
 @app.route('/json')
 def jsons():

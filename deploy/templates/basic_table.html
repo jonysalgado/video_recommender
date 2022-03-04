@@ -19,9 +19,9 @@
           <td><a href={{ video.video_id }} target="_blank">{{ video.title }}</a></td>
           <td>{{ video.score }}</td>
           <td>
-            <form>
-              <a id={{ video.video_id }}yes><button class='btn btn-default'>Sim</button></a>
-              <a id={{ video.video_id }}no><button class='btn btn-default'>Nao</button></a>
+            <form action="background_process_button" method="post">
+              <a><button name={{ video.video_id }}yes style="background:#3630a3;color:white;font-size: 11px;">Sim</button></a>
+              <a><button name={{ video.video_id }}no style="background:#3630a3;color:white;font-size: 11px;">Nao</button></a>
             </form>
           </td>
         </tr>
